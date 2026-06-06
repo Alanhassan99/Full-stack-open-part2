@@ -46,7 +46,7 @@ const Content = (props) => {
           <li key={note.id}>{note.name} {note.exercises}</li>
         )}
       </ul>
-      <p><b>total of {notes.reduce((total, current) => total + current.exercises, 0)}</b></p>
+      <p><b>total of {notes.reduce((total, current) => total + current.exercises, 0)} exercises</b></p>
     </div>
   )
 }

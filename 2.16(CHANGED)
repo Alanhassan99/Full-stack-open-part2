@@ -1,0 +1,21 @@
+const Changed = ({ message }) => {
+    if (!message) return null
+    const mystyle = {
+        color: "green",
+        backgroundColor: "lightgrey",
+        padding: "2px",
+        paddingLeft: "8px",
+        marginBottom: "5px",
+        fontFamily: "Arial",
+        borderColor: "green",
+        border: "solid",
+        borderRadius: "4px"
+    };
+    return (
+        <div style={mystyle}>
+            <p>{message}</p>
+        </div>
+    )
+}
+
+export default Changed

@@ -1,0 +1,133 @@
+import { useState, useEffect } from 'react'
+import theCountries from './theCountries'
+import weatherService from '../weatherService'
+
+const App = () => {
+  const [search, setSearch] = useState('')
+  const [countries, setCountries] = useState([])
+  const [selectedCountry, setSelectedCountry] = useState(null)
+  const [weathers, setWeathers] = useState(null)
+
+  const handleShow = (event) => {
+    setSelectedCountry(event)
+  }
+  useEffect(() => {
+    if (!selectedCountry) return
+
+    const capital = selectedCountry.capital?.[0]
+
+    weatherService.getWeather(capital).then(setWeathers)
+  }, [selectedCountry])
+
+  useEffect(() => {
+    theCountries.getAll().then(setCountries)
+  }, [])
+  const handleInput = (event) => {
+
+    setSearch(event.target.value)
+    setSelectedCountry(null)
+
+  }
+
+  const countriesToShow = search === '' ? [] : countries.filter(country =>
+    country.name.common
+      .toLowerCase()
+      .startsWith(search.toLowerCase())
+
+  )
+  if (countriesToShow.length > 10) {
+    return (
+      <div>
+        find countries <input value={search} onChange={handleInput} />
+        <p>Too many matches, specify another filter</p>
+      </div>
+    )
+  }
+
+
+  if (countriesToShow.length === 1) {
+    return (
+      <div>
+        find countries
+        <input value={search} onChange={handleInput} />
+
+        <h2>{countriesToShow[0].name.common}</h2>
+
+        <p>Capital {countriesToShow[0].capital}</p>
+        <p>Area {countriesToShow[0].area}</p>
+
+        <h2>Languages</h2>
+
+        {countriesToShow[0].languages && (
+          <ul>
+            {Object.values(countriesToShow[0].languages).map(language => (
+              <li key={language}>{language}</li>
+            ))}
+          </ul>
+        )}
+        {
+          countriesToShow[0].flags && (
+            <img
+              src={countriesToShow[0].flags.png}
+              alt={countriesToShow[0].flags.alt}
+            ></img>
+          )
+        }
+        {weathers && (
+          <div>
+            <h3>Weather in {countriesToShow[0].capital?.[0]}</h3>
+            <p>Temperature: {weathers.main?.temp} °C</p>
+            <p>Wind: {weathers.wind?.speed} m/s</p>
+          </div>
+        )}
+
+      </div>
+    )
+  }
+
+  if (selectedCountry) {
+    return (
+      <div>
+        find countries <input value={search} onChange={handleInput} />
+
+        <h2>{selectedCountry.name.common}</h2>
+        <p>Capital {selectedCountry.capital}</p>
+        <p>Area {selectedCountry.area}</p>
+
+        <h2>Languages</h2>
+        <ul>
+          {Object.values(selectedCountry.languages || {}).map(lang => (
+            <li key={lang}>{lang}</li>
+          ))}
+        </ul>
+
+        <img
+          src={selectedCountry.flags.png}
+          alt={selectedCountry.name.common}
+        />
+
+        {weathers && (
+          <div>
+            <h3>Weather in {selectedCountry.capital?.[0]}</h3>
+            <p>Temperature: {weathers.main?.temp} °C</p>
+            <p>Wind: {weathers.wind?.speed} m/s</p>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+
+
+  return (
+    <div>
+      find countries <input value={search} onChange={handleInput} />
+      {countriesToShow.map(country => (
+        <p key={country.name.common}>{country.name.common} <button onClick={() => handleShow(country)}>show</button></p>
+      ))}
+
+    </div >
+  )
+}
+
+export default App

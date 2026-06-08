@@ -1,0 +1,74 @@
+import { useState, useEffect, useLayoutEffect } from 'react'
+import theCountries from './theCountries'
+
+const App = () => {
+  const [search, setSearch] = useState('')
+  const [countries, setCountries] = useState([])
+
+
+  useEffect(() => {
+    theCountries.getAll().then(setCountries)
+  }, [])
+  const handleInput = (event) => {
+
+    setSearch(event.target.value)
+
+  }
+  const countriesToShow = search === '' ? [] : countries.filter(country =>
+    country.name.common
+      .toLowerCase()
+      .startsWith(search.toLowerCase())
+  )
+  if (countriesToShow.length > 10) {
+    return (
+      <div>
+        find countries <input value={search} onChange={handleInput} />
+        <p>Too many matches, specify another filter</p>
+      </div>
+    )
+  }
+
+  if (countriesToShow.length === 1) {
+    return (
+      <div>
+        find countries
+        <input value={search} onChange={handleInput} />
+
+        <h2>{countriesToShow[0].name.common}</h2>
+
+        <p>Capital {countriesToShow[0].capital}</p>
+        <p>Area {countriesToShow[0].area}</p>
+
+        <h2>Languages</h2>
+
+        {countriesToShow[0].languages && (
+          <ul>
+            {Object.values(countriesToShow[0].languages).map(language => (
+              <li key={language}>{language}</li>
+            ))}
+          </ul>
+        )}
+        {
+          countriesToShow[0].flags && (
+            <img
+              src={countriesToShow[0].flags.png}
+              alt={countriesToShow[0].flags.alt}
+            ></img>
+          )
+        }
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      find countries <input value={search} onChange={handleInput} />
+      {countriesToShow.map(country => (
+        <p key={country.name.common}>{country.name.common}</p>
+      ))}
+
+    </div >
+  )
+}
+
+export default App

@@ -1,0 +1,28 @@
+const Course = (props) => {
+    return (
+        <Content notes={props.courses} />
+    )
+}
+const Content = ({ notes }) => {
+    const firstNotes = notes[0].parts
+    const secondNotes = notes[1].parts
+    return (
+        <div>
+            <h1>{notes[0].name}</h1>
+            <ul>
+                {firstNotes.map(note =>
+                    <li key={note.id}>{note.name}</li>
+                )}
+            </ul>
+            <p><b>total of {firstNotes.reduce((total, current) => total + current.exercises, 0)} exercises</b></p>
+            <h1>{notes[1].name}</h1>
+            <ul>
+                {secondNotes.map(note =>
+                    <li key={note.id}>{note.name}</li>
+                )}
+            </ul>
+            <p><b>total of {secondNotes.reduce((total, current) => total + current.exercises, 0)} exercises</b></p>
+        </div >
+    )
+}
+export default Course
